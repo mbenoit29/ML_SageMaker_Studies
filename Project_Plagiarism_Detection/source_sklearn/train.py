@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.externals import joblib
 
 ## TODO: Import any additional libraries you need to define a model
-
+from sklearn.linear_model import LogisticRegression
 
 # Provided model load function
 def model_fn(model_dir):
@@ -39,7 +39,11 @@ if __name__ == '__main__':
     parser.add_argument('--data-dir', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
     
     ## TODO: Add any additional arguments that you will need to pass into your model
-    
+    parser.add_argument('--solver', type=str, default='lbfgs')
+    parser.add_argument('--class_weight', type=str, default=None)
+    parser.add_argument('--penalty', type=str, default='l2')
+#     parser.add_argument('--regularization', type=float, default=1.0)
+    parser.add_argument('--max_iter', type=int, default=100)
     # args holds all passed-in arguments
     args = parser.parse_args()
 
@@ -56,11 +60,13 @@ if __name__ == '__main__':
     
 
     ## TODO: Define a model 
-    model = None
-    
+    model = LogisticRegression(solver=args.solver,
+                               class_weight=args.class_weight,
+                               penalty=args.penalty,
+                               max_iter=args.max_iter)
     
     ## TODO: Train the model
-    
+    model.fit(train_x, train_y)
     
     
     ## --- End of your code  --- ##
